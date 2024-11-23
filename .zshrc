@@ -28,6 +28,8 @@ zinit light-mode for \
     zdharma-continuum/zinit-annex-rust
 
 ### End of Zinit's installer chunk
+export PATH="/home/abhishek/.local/bin:$PATH"
+export PATH="$PATH:/opt/nvim-linux64/bin"
 
 # Install zinit:
 # bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"

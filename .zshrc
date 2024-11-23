@@ -106,11 +106,10 @@ export PATH="/home/abhishek/.local/bin:$PATH"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+export PATH="$PATH:/opt/nvim-linux64/bin"
 compinit
 eval "$(zoxide init zsh)"
 alias cd="z"
 alias cdi="zi"
 alias vi="nvim"
-
-cd ~
 

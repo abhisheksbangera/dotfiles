@@ -38,8 +38,10 @@ export PATH="$PATH:/opt/nvim-linux64/bin"
 zinit ice depth=1;zinit light romkatv/powerlevel10k
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
+#zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
+zinit wait lucid atload'_zsh_autosuggest_start; unalias zi' light-mode for \
+    zsh-users/zsh-autosuggestions
 
 autoload -Uz compinit && compinit
 zinit cdreplay -q

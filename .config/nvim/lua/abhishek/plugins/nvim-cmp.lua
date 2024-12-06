@@ -17,7 +17,6 @@ return {
     },
     config = function()
       local cmp = require("cmp")
-  
       local luasnip = require("luasnip")
   
       local lspkind = require("lspkind")
@@ -45,6 +44,7 @@ return {
         }),
         -- sources for autocompletion
         sources = cmp.config.sources({
+          { name = "nvim_lsp" }, -- snippets
           { name = "luasnip" }, -- snippets
           { name = "buffer" }, -- text within current buffer
           { name = "path" }, -- file system paths

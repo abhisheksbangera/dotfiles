@@ -19,13 +19,17 @@ return {
             enable = true,
           },
           icons = {
-            glyphs = {
-              folder = {
-                arrow_closed = "", -- arrow when folder is closed
-                arrow_open = "", -- arrow when folder is open
-              },
+            show = {
+              file = false,
+              folder = false,
             },
+          -- web_devicons = {
+          --   folder = {
+          --     enable = false
+          --   }
+          -- }
           },
+
         },
         -- disable window_picker for
         -- explorer to work well with

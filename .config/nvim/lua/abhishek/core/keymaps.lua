@@ -16,8 +16,8 @@ keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
 -- keymap.set("n", "x", '"_x')
 
 -- increment/decrement numbers
-keymap.set("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- increment
-keymap.set("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
+-- keymap.set("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- increment
+-- keymap.set("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
 
 -- window management
 keymap.set("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" }) -- split window vertically
@@ -37,3 +37,15 @@ keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<CR>", { desc = "Undotree toggl
 
 keymap.set("i", "<C-f>", "<Right>", { desc = "move cursor in insert mode" })
 keymap.set("i", "<C-d>", "<Left>", { desc = "move cursor in insert mode" })
+
+-- Quickfix list
+keymap.set("n", "<leader>=", "<cmd>cnext<CR>", { desc = "quickfix list next" })
+keymap.set("n", "<leader>-", "<cmd>cprev<CR>", { desc = "quickfix list previous" })
+keymap.set("n", "<leader>+", "<cmd>copen<CR>", { desc = "quickfix list open" })
+keymap.set("n", "<leader>_", "<cmd>cclose<CR>", { desc = "quickfix list close" })
+
+keymap.set("n", "yc", function() vim.api.nvim_feedkeys('yygccp', 'm', false) end)
+
+-- move selected line up or down
+keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "move lines down" })
+keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "move lines up" })

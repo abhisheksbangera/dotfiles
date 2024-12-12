@@ -8,7 +8,8 @@ return {
       -- configure lualine with modified theme
       lualine.setup({
         options = {
-          theme = "codedark",
+          -- theme = "codedark",
+          theme = "ayu",
           icons_enabled = false,
           section_separators = '', 
           component_separators = '',

@@ -18,7 +18,7 @@ opt.wrap = false
 opt.ignorecase = true -- ignore case when searching
 opt.smartcase = true -- if you include mixed case in your search, assumes you want case-sensitive
 
-opt.cursorline = true
+-- opt.cursorline = true
 
 -- appearance
 

@@ -29,7 +29,8 @@ return {
         tabline_suffix = "   ",
     },
     menu = {
-        width = vim.api.nvim_win_get_width(0) - 40,
+        -- width = vim.api.nvim_win_get_width(0) - 40,
+        width = 60,
       }
     })
     vim.keymap.set('n', '<leader>hx', require('harpoon.mark').add_file, { desc = "harpoon add file" })

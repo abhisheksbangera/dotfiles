@@ -12,6 +12,11 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Omarchy base environment (OMARCHY_PATH, mise shims, EDITOR/BROWSER/MANPAGER).
+# These files are POSIX-safe, so zsh can source them directly.
+[[ -r /usr/share/omarchy/default/bash/env-bootstrap ]] && source /usr/share/omarchy/default/bash/env-bootstrap
+[[ -r "${OMARCHY_PATH:-/usr/share/omarchy}/default/bash/envs" ]] && source "${OMARCHY_PATH:-/usr/share/omarchy}/default/bash/envs"
+
 ### Added by Zinit's installer
 if [[ ! -f "$HOME/.local/share/zinit/zinit.git/zinit.zsh" ]]; then
     print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
@@ -32,8 +37,9 @@ fi
 
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 
-export EDITOR="nvim"
-export VISUAL="nvim"
+# Omarchy's envs already sets EDITOR (omarchy-launch-editor); nvim is the fallback.
+export EDITOR="${EDITOR:-nvim}"
+export VISUAL="${VISUAL:-$EDITOR}"
 
 # NOTE: the old zinit-annex-* block was deleted on purpose — annexes have
 # been merged into main zinit for years and only produce warnings now.
@@ -55,6 +61,7 @@ zinit light zsh-users/zsh-syntax-highlighting
 # zoxide provides `cd` (smart) + `cdi` (interactive) itself — no dumb aliases.
 command -v zoxide >/dev/null && eval "$(zoxide init zsh --cmd cd)"
 command -v fzf >/dev/null && eval "$(fzf --zsh)"
+command -v mise >/dev/null && eval "$(mise activate zsh)"
 
 # fzf: compact popup layout; fd backend respects .gitignore and is faster.
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --info=inline"
@@ -65,13 +72,17 @@ if command -v fd >/dev/null; then
 fi
 
 command -v nvim >/dev/null && alias vi="nvim"
-alias ls="ls --color=auto"
 if command -v eza >/dev/null; then
+  # Flags follow Omarchy's bash defaults.
+  alias ls="eza -lh --group-directories-first --icons=auto"
+  alias lsa="ls -a"
+  alias lt="eza --tree --level=2 --long --icons --git"
+  alias lta="lt -a"
   alias l="eza -lah --icons"
   alias ll="eza -lh --icons --git"
   alias la="eza -lah --icons"
-  alias lt="eza --tree --level=2 --icons"
 else
+  alias ls="ls --color=auto"
   alias l="ls -lah --color=auto"
 fi
 
@@ -96,12 +107,17 @@ zle -N sudo-command-line
 bindkey '\es' sudo-command-line
 
 # --- Git + forges ---
+# NOTE: ga/gd are intentionally NOT aliased here — Omarchy provides them as
+# git-worktree create/remove functions (sourced below), which is the more
+# distinctive use of those keys. Use `git add` / `git diff` in full.
 alias gs="git status -sb"
-alias ga="git add"
+alias g="git"
 alias gc="git commit"
+alias gcm="git commit -m"
+alias gcam="git commit -a -m"
+alias gcad="git commit -a --amend"
 alias gp="git push"
 alias gl="git log --oneline --graph --decorate -15"
-alias gd="git diff"
 command -v lazygit >/dev/null && alias lg="lazygit"
 if command -v gh >/dev/null; then
   alias ghpr="gh pr status"
@@ -130,6 +146,64 @@ if command -v yazi >/dev/null; then
     rm -f -- "$tmp"
   }
 fi
+
+# --- Omarchy functions ---
+# The whole fns/ dir is bashism-free and sources cleanly in zsh. Highlights:
+# tdl/tds/tdlm/tsl (tmux dev layouts), ga/gd (worktree create/remove),
+# compress/decompress, iso2sd/format-drive, rsw/lsw/dsw + fip/dip/lip (rsync/ssh),
+# hdl/hds/hdlm/hsl (herdr layouts).
+if [[ -n "${OMARCHY_PATH:-}" && -d "$OMARCHY_PATH/default/bash/fns" ]]; then
+  for f in "$OMARCHY_PATH"/default/bash/fns/*; do
+    [[ -r "$f" ]] && source "$f"
+  done
+  unset f
+fi
+
+# try: lazy-loads on first use (like Omarchy's bash), rooted at ~/Work/tries.
+if command -v try >/dev/null; then
+  try() {
+    unfunction try
+    eval "$(SHELL=/bin/bash command try init ~/Work/tries)"
+    try "$@"
+  }
+fi
+
+# omarchy subcommand completion (bash's `complete` API via zsh's bashcompinit shim).
+if command -v omarchy >/dev/null && [[ -r "${OMARCHY_PATH:-/usr/share/omarchy}/default/bash/completions" ]]; then
+  autoload -U +X bashcompinit && bashcompinit
+  source "${OMARCHY_PATH:-/usr/share/omarchy}/default/bash/completions"
+fi
+
+# --- Omarchy aliases (adapted from default/bash/aliases) ---
+if command -v fzf >/dev/null && command -v bat >/dev/null; then
+  # ff: fuzzy-find with file preview; eff: open the pick in $EDITOR.
+  alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
+  alias eff='$EDITOR "$(ff)"'
+  # sff <destination>: pick from recently modified files and scp it there.
+  sff() {
+    if [ $# -eq 0 ]; then echo "Usage: sff <destination> (e.g. sff host:/tmp/)"; return 1; fi
+    local file
+    file=$(find . -type f -printf '%T@\t%p\n' | sort -rn | cut -f2- | ff) && [ -n "$file" ] && scp "$file" "$1"
+  }
+fi
+# open: detach-open a file/URL without blocking the shell.
+open() (
+  xdg-open "$@" >/dev/null 2>&1 &
+)
+# n: nvim DWIM — no args opens the current dir.
+n() { if [ "$#" -eq 0 ]; then command nvim . ; else command nvim "$@"; fi; }
+# AI agents (one-letter Omarchy shortcuts).
+command -v omarchy-agent >/dev/null && alias a="omarchy-agent --inline"
+command -v opencode >/dev/null && alias c="opencode --auto"
+command -v claude >/dev/null && alias cx='printf "\033[2J\033[3J\033[H" && claude --permission-mode auto'
+command -v codex >/dev/null && alias cy="codex --approve-for-me"
+command -v docker >/dev/null && alias d="docker"
+command -v herdr >/dev/null && alias h="herdr"
+# ic/ix/icx: spin up a tmux dev layout (tdl comes from Omarchy fns above).
+alias ic="tdl c"
+alias ix="tdl cx"
+alias icx="tdl c cx"
+command -v mise >/dev/null && alias mup="MISE_MINIMUM_RELEASE_AGE=0 mise up"
 
 # --- Tmux ---
 alias ta="tmux attach -t main 2>/dev/null || tmux new -s main"

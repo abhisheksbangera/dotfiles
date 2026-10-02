@@ -1,0 +1,15 @@
+[flavor]
+dark = "catppuccin-mocha"
+
+# High-contrast overrides for header/status bar (helps Ghostty's thinner
+# rendering at 11pt; still Catppuccin Mocha palette, just brighter steps).
+[tabs]
+inactive = { fg = "#cdd6f4", bg = "#45475a" }
+
+[mode]
+normal_alt = { fg = "#cdd6f4", bg = "#45475a" }
+select_alt = { fg = "#cdd6f4", bg = "#45475a" }
+unset_alt  = { fg = "#cdd6f4", bg = "#45475a" }
+
+[status]
+perm_sep = { fg = "#9399b2" }

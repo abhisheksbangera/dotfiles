@@ -1,0 +1,100 @@
+[env]
+TERM = "xterm-256color"
+
+[terminal]
+osc52 = "CopyPaste"
+
+[font]
+normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
+bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }
+italic = { family = "JetBrainsMono Nerd Font", style = "Italic" }
+size = 11
+
+[window]
+padding.x = 14
+padding.y = 14
+decorations = "None"
+dynamic_padding = true
+
+# Catppuccin Mocha (inlined so no theme daemon is needed)
+[colors.primary]
+background = "#1e1e2e"
+foreground = "#cdd6f4"
+dim_foreground = "#7f849c"
+bright_foreground = "#cdd6f4"
+
+[colors.cursor]
+text = "#1e1e2e"
+cursor = "#f5e0dc"
+
+[colors.vi_mode_cursor]
+text = "#1e1e2e"
+cursor = "#b4befe"
+
+[colors.search.matches]
+foreground = "#1e1e2e"
+background = "#a6adc8"
+
+[colors.search.focused_match]
+foreground = "#1e1e2e"
+background = "#a6e3a1"
+
+[colors.hints.start]
+foreground = "#1e1e2e"
+background = "#f9e2af"
+
+[colors.hints.end]
+foreground = "#1e1e2e"
+background = "#a6adc8"
+
+[colors.line_indicator]
+foreground = "None"
+background = "None"
+
+[colors.footer_bar]
+foreground = "#1e1e2e"
+background = "#a6adc8"
+
+[colors.selection]
+text = "#1e1e2e"
+background = "#f5e0dc"
+
+[colors.normal]
+black = "#45475a"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#cba6f7"
+cyan = "#94e2d5"
+white = "#bac2de"
+
+[colors.bright]
+black = "#585b70"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#cba6f7"
+cyan = "#94e2d5"
+white = "#a6adc8"
+
+[colors.dim]
+black = "#45475a"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#cba6f7"
+cyan = "#94e2d5"
+white = "#bac2de"
+
+[keyboard]
+bindings = [
+{ key = "Insert", mods = "Shift", action = "Paste" },
+{ key = "Insert", mods = "Control", action = "Copy" },
+# Send Shift+Return as CSI-u so TUIs can distinguish it from Return without treating it as Alt+Return.
+{ key = "Return", mods = "Shift", chars = "\u001B[13;2u" },
+# Legacy encoding sends Alt+Shift+Return the same as Alt+Return; send CSI-u so tmux can match M-S-Enter.
+{ key = "Return", mods = "Alt|Shift", chars = "\u001B[13;4u" }
+]

@@ -1,1 +1,5 @@
-.config/htop
+.DS_Store
+*.bak.*
+*.bak
+*~
+.netrwhist

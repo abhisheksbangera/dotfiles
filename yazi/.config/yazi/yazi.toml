@@ -1,0 +1,11 @@
+[mgr]
+linemode = "size"
+
+[plugin]
+# Conditional image preview: the `chafa` plugin uses native graphics
+# everywhere except Alacritty, where it renders via chafa ANSI art.
+# (Yazi has no `image_protocol` option, so this is done inside the plugin.)
+prepend_previewers = [
+	{ mime = "image/*", run = "chafa" },
+]
+

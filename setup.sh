@@ -34,6 +34,41 @@ install_tpm() {
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm 2>/dev/null || warn "tpm clone failed (offline?)"
 }
 
+install_mpv_plugins() {
+  # Third-party mpv scripts are not tracked in this repo, only our config is.
+  local mpv_cfg="${XDG_CONFIG_HOME:-$HOME/.config}/mpv"
+  local scripts="$mpv_cfg/scripts"
+  mkdir -p "$scripts" "$mpv_cfg/fonts"
+
+  # uosc ships prebuilt helper binaries and fonts, so use its release zip.
+  if [[ ! -f "$scripts/uosc/main.lua" ]]; then
+    log "Installing uosc (mpv UI)..."
+    local tmp; tmp="$(mktemp -d)"
+    if curl -fsSL --max-time 120 -o "$tmp/uosc.zip" \
+         https://github.com/tomasklaen/uosc/releases/latest/download/uosc.zip \
+       && unzip -oq "$tmp/uosc.zip" -d "$mpv_cfg"; then
+      log "uosc installed"
+    else
+      warn "uosc download failed (offline?); mpv will start without a UI"
+    fi
+    rm -rf "$tmp"
+  fi
+
+  # Single-file plugins.
+  local plugin
+  for plugin in thumbfast memo; do
+    [[ -f "$scripts/$plugin.lua" ]] && continue
+    log "Installing $plugin.lua..."
+    if curl -fsSL --max-time 60 -o "$scripts/$plugin.lua.tmp" \
+         "https://raw.githubusercontent.com/po5/$plugin/master/$plugin.lua"; then
+      mv "$scripts/$plugin.lua.tmp" "$scripts/$plugin.lua"
+    else
+      rm -f "$scripts/$plugin.lua.tmp"
+      warn "$plugin.lua download failed (offline?)"
+    fi
+  done
+}
+
 stow_all() {
   command -v stow >/dev/null || { echo "stow not installed" >&2; exit 1; }
   log "Stowing packages..."
@@ -46,6 +81,13 @@ stow_all() {
     stow -d "$DOTFILES_DIR" -t "$HOME" -R "$pkg"
     log "stowed $pkg"
   done
+  # mpv: --no-folding on purpose. Third-party scripts (uosc, thumbfast, memo)
+  # live in ~/.config/mpv/scripts next to our own, so that dir must stay a real
+  # directory instead of becoming a symlink into the repo.
+  if [[ -d "$DOTFILES_DIR/mpv" ]]; then
+    stow -d "$DOTFILES_DIR" -t "$HOME" -R --no-folding mpv
+    log "stowed mpv"
+  fi
   # chmod +x ~/.config/hypr/scripts/*.sh 2>/dev/null || true
   chmod +x ~/.local/bin/tmux-sessionizer 2>/dev/null || true
 }
@@ -69,6 +111,7 @@ set_defaults() {
 main() {
   install_packages
   install_tpm
+  install_mpv_plugins
   stow_all
   set_shell
   set_defaults

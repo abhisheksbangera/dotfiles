@@ -14,6 +14,7 @@ static Catppuccin Mocha colours in alacritty (no theme daemon).
 | `nvim` | LazyVim-based config, Catppuccin Mocha default |
 | `yazi` | file manager config |
 | `imv` | image viewer binds (`~/.config/imv/config`) |
+| `mpv` | player config + uosc overrides + custom Lua scripts (`~/.config/mpv`); third-party scripts are installed by `setup.sh`, not tracked |
 
 ## Quick start
 
@@ -50,6 +51,23 @@ Deviations from the old setup: the scrolling-layout toggle is `togglesplit`
 
 Alacritty with JetBrainsMono Nerd Font 11pt and CSI-u `Shift+Enter` bindings so
 tmux `M-S-Enter` horizontal splits work.
+
+## mpv
+
+uosc-based UI (`osc=no`, so mpv without uosc shows no controls at all):
+top bar keeps the title but no window buttons, the control bar drops the
+shuffle/loop/speed widgets, and the window is borderless.
+
+Custom Lua scripts (tracked here):
+
+- `resume-by-name` — resume Stremio/network streams by name instead of URL
+- `stremio-title` — give Stremio streams a real title for the top bar and
+  subtitle search
+- `stremio-force-sub` — keep Stremio's chosen subtitle selected
+
+Third-party scripts (`uosc`, `thumbfast`, `memo`) are downloaded by
+`setup.sh` into `~/.config/mpv/scripts/`, which is why the `mpv` package is
+stowed with `--no-folding`.
 
 ## Shell
 

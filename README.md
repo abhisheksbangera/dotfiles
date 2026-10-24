@@ -52,6 +52,12 @@ Deviations from the old setup: the scrolling-layout toggle is `togglesplit`
 Alacritty with JetBrainsMono Nerd Font 11pt and CSI-u `Shift+Enter` bindings so
 tmux `M-S-Enter` horizontal splits work.
 
+Vi mode (`Ctrl+Shift+Space`, exit with `i` or `Ctrl+C`) shows a red
+`[line/total]` badge and tints the window background dark purple. Alacritty has
+no native vi-mode background option, so the toggle bindings run
+`~/.config/alacritty/vi-mode-bg.sh`, which flips a `colors.primary.background`
+runtime override over the IPC socket (`ALACRITTY_SOCKET`).
+
 ## mpv
 
 uosc-based UI (`osc=no`, so mpv without uosc shows no controls at all):

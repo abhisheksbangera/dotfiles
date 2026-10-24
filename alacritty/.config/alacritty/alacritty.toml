@@ -29,7 +29,7 @@ cursor = "#f5e0dc"
 
 [colors.vi_mode_cursor]
 text = "#1e1e2e"
-cursor = "#b4befe"
+cursor = "#ffffff"
 
 [colors.search.matches]
 foreground = "#1e1e2e"
@@ -47,9 +47,10 @@ background = "#f9e2af"
 foreground = "#1e1e2e"
 background = "#a6adc8"
 
+# Red "[line/total]" badge while vi mode is active.
 [colors.line_indicator]
-foreground = "None"
-background = "None"
+foreground = "#1e1e2e"
+background = "#f38ba8"
 
 [colors.footer_bar]
 foreground = "#1e1e2e"
@@ -91,6 +92,18 @@ white = "#bac2de"
 
 [keyboard]
 bindings = [
+# Vi mode: tint the window background while it is active. There is no native
+# option, so the toggle keys also run vi-mode-bg.sh, which flips a runtime
+# colors.primary.background override over the IPC socket.
+{ key = "Space", mods = "Control|Shift", action = "ToggleViMode" },
+{ key = "Space", mods = "Control|Shift", command = { program = "sh", args = ["-c", "exec \"$HOME/.config/alacritty/vi-mode-bg.sh\""] } },
+# "i" leaves vi mode; keep the default ScrollToBottom and clear the tint too.
+{ key = "i", mode = "Vi|~Search", action = "ToggleViMode" },
+{ key = "i", mode = "Vi|~Search", action = "ScrollToBottom" },
+{ key = "i", mode = "Vi|~Search", command = { program = "sh", args = ["-c", "exec \"$HOME/.config/alacritty/vi-mode-bg.sh\""] } },
+# Ctrl+C also leaves vi mode.
+{ key = "c", mods = "Control", mode = "Vi|~Search", action = "ToggleViMode" },
+{ key = "c", mods = "Control", mode = "Vi|~Search", command = { program = "sh", args = ["-c", "exec \"$HOME/.config/alacritty/vi-mode-bg.sh\""] } },
 { key = "Insert", mods = "Shift", action = "Paste" },
 { key = "Insert", mods = "Control", action = "Copy" },
 # Send Shift+Return as CSI-u so TUIs can distinguish it from Return without treating it as Alt+Return.
